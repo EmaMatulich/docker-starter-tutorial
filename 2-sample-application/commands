@@ -1,0 +1,27 @@
+1 - Create a Dockerfile at the root of todo-lis-app project
+with the following commands:
+
+ FROM node:12-alpine
+ WORKDIR /app
+ COPY . .
+ RUN yarn install --production
+ CMD ["node", "src/index.js"]
+
+
+2 - In the root of the project execute the following 
+command to build the container image -> 
+        
+        docker build -t getting-started .
+
+This command used the Dockerfile to build a new container image. 
+
+After the image was downloaded, we copied in our application and used yarn to install our application’s dependencies. 
+
+The CMD directive specifies the default command to run when starting a container from this image.
+
+Finally, the -t flag tags our image. Think of this simply as a human-readable 
+name for the final image. Since we named the image getting-started, 
+we can refer to that image when we run a container.
+
+The . at the end of the docker build command tells that Docker 
+should look for the Dockerfile in the current directory.
