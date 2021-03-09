@@ -1,0 +1,10 @@
+Share the application using docker hub
+
+1- Create a public repository on your docker hub personal account
+2 - Login to the Docker Hub using the command docker login -u YOUR-USER-NAME
+3 - docker tag getting-started YOUR-USER-NAME/getting-started
+4 - docker push YOUR-USER-NAME/getting-started
+5- test the new pushed docker image running the following command 
+in nother host, could be in https://labs.play-with-docker.com/:
+
+        docker run -d -p 3000:3000 ematulich/getting-started

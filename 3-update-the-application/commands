@@ -1,0 +1,23 @@
+1 - In the src/static/js/app.js file, update line 56 to use the new empty text.
+
+ -                <p className="text-center">No items yet! Add one above!</p>
+ +                <p className="text-center">You have no todo items yet! Add one above!</p>
+
+2 - Build the updated version of the image:
+         docker build -t getting-started .
+
+3 - Start a new container using the updated code:
+
+    docker run -dp 3000:3000 getting-started
+
+4 - Remove the old container if its executin in order to release port 3000:
+    a - Get the ID of the container by using the docker ps command:
+            docker ps
+    b - Stop the container:
+            docker stop <container-id>
+    c - Remove the container:
+            docker rm <container-id>
+
+5 - Start your updated app:
+        docker run -dp 3000:3000 getting-started
+
