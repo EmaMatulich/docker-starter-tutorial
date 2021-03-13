@@ -1,0 +1,69 @@
+Multi container apps
+
+** If two containers are on the same network, 
+they can talk to each other. If they aren’t, they can’t.
+
+**There are two ways to put a container on a network: 
+1) Assign it at start or 2) connect an existing container. 
+
+Steps:
+
+1 - Create the network.
+
+        docker network create todo-app
+
+2 - Start a MySQL container and attach it to the network. We’re also going
+ to define a few environment variables that the database will use to initialize the database
+
+  docker run -d \
+     --network todo-app --network-alias mysql \
+     -v todo-mysql-data:/var/lib/mysql \
+     -e MYSQL_ROOT_PASSWORD=secret \
+     -e MYSQL_DATABASE=todos \
+     mysql:5.7
+
+we’re using a volume named todo-mysql-data here and mounting it at /var/lib/mysql, 
+which is where MySQL stores its data. However, we never ran a docker volume create command. 
+Docker recognizes we want to use a named volume and creates one automatically for us.
+
+While mysql isn’t normally a valid hostname, Docker is able to resolve it to the IP address 
+of the container that had that network alias.
+
+
+3 - To confirm we have the database up and running, connect to the database and verify it connects.
+
+        docker exec -it <mysql-container-id> mysql -p
+
+4 - In the MySQL shell, list the databases and verify you see the todos database.
+
+        show DATABASES;
+
+
+5 - Running todo app with MySQL
+
+The todo app supports the setting of a few environment variables to specify MySQL connection settings. They are:
+
+MYSQL_HOST - the hostname for the running MySQL server
+MYSQL_USER - the username to use for the connection
+MYSQL_PASSWORD - the password to use for the connection
+MYSQL_DB - the database to use once connected
+
+We’ll specify each of the environment variables above, as well as connect the container to our app network.
+
+ docker run -dp 3000:3000 \
+   -w /app -v "$(pwd):/app" \
+   --network todo-app \
+   -e MYSQL_HOST=mysql \
+   -e MYSQL_USER=root \
+   -e MYSQL_PASSWORD=secret \
+   -e MYSQL_DB=todos \
+   node:12-alpine \
+   sh -c "yarn install && yarn run dev"
+
+6 - Open the app in your browser and add a few items to your todo list.
+
+7 - Connect to the mysql database and prove that the items are being written to the database. Remember, the password is secret.
+
+ docker exec -it <mysql-container-id> mysql -p todos
+
+ select * from todo_items;
